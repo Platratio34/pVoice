@@ -6,14 +6,20 @@ description 'Peter-Voice'
 version '0.1.0-Dev'
 
 client_scripts {
+    'config.lua',
+    'events.lua',
+    'client/classes/*.lua',
     'client/*.lua',
     'cl_*.lua'
 }
 
 server_scripts {
+    'config.lua',
+    'events.lua',
+    'server/classes/*.lua',
     'server/*.lua',
     'sv_*.lua',
-    'config/*/*.lua'
+    'config/*/*.lua',
 }
 
 shared_scripts {
