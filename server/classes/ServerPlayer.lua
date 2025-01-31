@@ -71,6 +71,8 @@ end
 ---Set the talking state of the player for the specified target
 ---@param target string
 ---@param talking? boolean
+---@param source? string
+---@param power? number
 function ServerPlayer:setTalking(target, talking, source, power)
     if talking == nil then
         talking = true
@@ -133,6 +135,8 @@ end
 ---Set the listening state of the server player for the specified target
 ---@param target string
 ---@param listen? boolean
+---@param source? string
+---@param sensitivity? number
 function ServerPlayer:setListen(target, listen, source, sensitivity)
     if listen == nil then
         listen = true

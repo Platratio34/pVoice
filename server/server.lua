@@ -12,6 +12,11 @@ function GetOrCreatePlayer(id)
     return p
 end
 
+RegisterNetEvent(Events.setTalking, function(talkSource, talking)
+    local player = GetOrCreatePlayer(source)
+    player:setTalking(talkSource, talking)
+end)
+
 -- RegisterNetEvent(Events.setTalking, function(target, talking)
 --     GetOrCreatePlayer(source):setTalking(target, talking)
 -- end)
