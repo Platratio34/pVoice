@@ -2,7 +2,7 @@ Events = {
     setTalking = 'pvoice:set_taking', --- C => S: (`source: string, talking: boolean`)
     stopTalking = 'pvoice:stop_talking', --- S => C: (`nil`)
 
-    updateVolumes = 'pvoice:update_volumes', --- S => C: (`volumes: { [ServerPlayer]: number }`)
+    updateVolumes = 'pvoice:update_volumes', --- S => C: (`volumes: { [ServerPlayer]: number }, submixes: { [ServerPlayer]: string }`)
 
     radio = {
         set_state = 'pvoice:radio:set_state', --- C => S: (`radioId: string, tx: boolean, rx: boolean`)

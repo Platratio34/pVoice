@@ -10,3 +10,5 @@
 ---@alias NetEntity integer Entity Net Id
 ---@alias Player integer Player Id
 ---@alias ServerPlayer integer Player server Id
+
+---@alias Hash integer|string

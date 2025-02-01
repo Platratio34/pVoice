@@ -69,13 +69,18 @@ function SelfMute()
     wasTalking = false
 end
 
-RegisterNetEvent(Events.updateVolumes, function(volumes)
+RegisterNetEvent(Events.updateVolumes, function(volumes, submixes)
     for i = 1, 128 do
         MumbleSetVolumeOverrideByServerId(i, volumes[i] or -1)
         if volumes[i] then
             MumbleAddVoiceChannelListen(i)
         else
             MumbleRemoveVoiceChannelListen(i)
+        end
+        if submixes[i] then
+            MumbleSetSubmixForServerId(i, GetSubmix(submixes[i]))
+        else
+            MumbleSetSubmixForServerId(i, -1)
         end
     end
     
@@ -88,6 +93,7 @@ RegisterNetEvent(Events.updateVolumes, function(volumes)
         local pPos = GetEntityCoords(GetPlayerPed(player))
         if volumes[serverId] < 1 and #(pPos - pos) < Config.revertDistance then
             MumbleSetVolumeOverrideByServerId(serverId, -1)
+            MumbleSetSubmixForServerId(serverId, -1)
         end
     end
 end)

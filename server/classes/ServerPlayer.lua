@@ -3,6 +3,7 @@
 ---@field protected _talkingTargets { [string]: PVoice.IDValueSet }
 ---@field protected _listenTargets { [string]: PVoice.IDValueSet }
 ---@field radios { [string]: PVoice.ServerRadio }
+---@field calls { [string]: PVoice.Call }
 ServerPlayer = {}
 
 ---Create a new server player wrapper
@@ -23,6 +24,7 @@ function ServerPlayer:__init__(id)
     self._listenTargets = {}
     self._talkingTargets = {}
     self.radios = {}
+    self.calls = {}
 end
 
 ---Send an event to the player

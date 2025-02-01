@@ -2,6 +2,7 @@
 ---@field id string
 ---@field pos Vector3
 ---@field targetPairs { [string]: { [string]: PVoice.Tower.TargetPair } }
+---@field cell boolean
 Tower = {}
 
 ---Create a new radio tower
@@ -17,6 +18,7 @@ function Tower:__init__(id, pos)
     self.id = id
     self.pos = pos
     self.targetPairs = {}
+    self.cell = false
     return self
 end
 
@@ -56,6 +58,12 @@ function Tower:getRebroadcast(rxTarget)
         list[rx] = pair.power
     end
     return list
+end
+
+---Set if this tower should be a cell tower
+---@param cell boolean If the tower is a cell tower
+function Tower:setCellTower(cell)
+    self.cell = cell
 end
 
 ---@class PVoice.Tower.TargetPair

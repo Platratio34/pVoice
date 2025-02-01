@@ -85,3 +85,8 @@ function MumbleSetActive(state) end
 ---@param serverId ServerPlayer The player's server id.
 ---@param volume number The volume, ranging from 0.0 to 1.0 (or above).
 function MumbleSetVolumeOverrideByServerId(serverId, volume) end
+
+---Sets the audio submix ID for a specified player using Mumble 'Native Audio' functionality.
+---@param serverId ServerPlayer The player's server ID.
+---@param submixId integer The submix ID.
+function MumbleSetSubmixForServerId(serverId, submixId) end

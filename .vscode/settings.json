@@ -1,6 +1,8 @@
 {
     "cSpell.words": [
-        "pvoice"
+        "pvoice",
+        "submix",
+        "submixes"
     ],
     "Lua.diagnostics.globals": [
         "source"
