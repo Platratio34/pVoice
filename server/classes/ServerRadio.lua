@@ -137,3 +137,9 @@ function ServerRadio:dispose()
     end
     self.player:send(Events.removeRadio, self.id)
 end
+
+---Get the receive target id
+---@return string? rxTarget Receive target. May be `nil` if receive is disabled
+function ServerRadio:getRxTarget()
+    return self._rxTarget
+end

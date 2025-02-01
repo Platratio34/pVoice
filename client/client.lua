@@ -69,7 +69,9 @@ function SelfMute()
     wasTalking = false
 end
 
-RegisterNetEvent(Events.updateVolumes, function(volumes, submixes)
+local activeRxTargets = {}
+RegisterNetEvent(Events.updateVolumes, function(volumes, submixes, targets)
+    activeRxTargets = targets
     for i = 1, 128 do
         MumbleSetVolumeOverrideByServerId(i, volumes[i] or -1)
         if volumes[i] then
@@ -97,3 +99,11 @@ RegisterNetEvent(Events.updateVolumes, function(volumes, submixes)
         end
     end
 end)
+
+---Check if a given receive target is currently receiving audio
+---@param target string Receive target
+---@return boolean active
+function IsRxActive(target)
+    return activeRxTargets[target] ~= nil
+end
+exports('IsRxActive', IsRxActive)

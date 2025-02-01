@@ -58,7 +58,7 @@ local function calcVolumes()
     end
     for pId, player in pairs(players) do
         -- tower radio:
-        local volumes, submixes = ProcessTowers(player, positionCache)
+        local volumes, submixes, targets = ProcessTowers(player, positionCache)
 
         -- direct radio:
         local rxTargets = player:getListenTargets()
@@ -70,23 +70,35 @@ local function calcVolumes()
                 if IsRadioTarget(rxTarget) then
                     local receivedPower = RadioPower(dist, txPower, GetRadioFreq(rxTarget))
                     local receivedVolume = math.min(receivedPower * rxSens, 1)
+                    if receivedVolume > 0.01 then
+                        targets[rxTarget] = true
+                    end
                     if receivedVolume > 0.01 and receivedVolume > (volumes[txId] or 0) then
                         volumes[txId] = receivedVolume
                         submixes[txId] = Config.radio.submixIds[1]
                     end
                 elseif IsCall(rxTarget) then
                     local connected, submix = CalcCallVolume(rxTarget, player, txPlayer, positionCache)
+                    if connected then
+                        targets[rxTarget] = true
+                    end
                     if connected and volumes[txId] < 1 then
                         volumes[txId] = math.max(volumes[txId] or 0, 1)
                         submixes[txId] = submix
                     end
                 else
-                    volumes[txId] = math.max(volumes[txId] or 0, txPower * rxSens)
-
+                    local volume = math.min(txPower * rxSens, 1)
+                    if volume > 0.01 then
+                        targets[rxTarget] = true
+                        if volume > (volumes[txId] or 0) then
+                            volumes[txId] = volume
+                            submixes[txId] = nil
+                        end
+                    end
                 end
             end
         end
-        player:send(Events.updateVolumes, volumes, submixes)
+        player:send(Events.updateVolumes, volumes, submixes, targets)
     end
 end
 

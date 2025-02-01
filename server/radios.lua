@@ -52,6 +52,20 @@ function SetRadioPower(playerId, radioId, power, sensitivity)
 end
 exports('setRadioPower', SetRadioPower)
 
+---Get the receive target for a given radio on player
+---@param playerId ServerPlayer Server ID of player to radio to get
+---@param radioId string Radio ID to get receive target for
+---@return string? rxTarget Receive target ID. May be `nil` if receive is disabled on the radio
+function GetRadioRxTarget(playerId, radioId)
+    local player = GetOrCreatePlayer(playerId)
+    if not player.radios[radioId] then
+        error(
+        "Unable to get receive target for radio on player " ..
+        playerId .. ': Player has no radio with ID "' .. radioId .. '"', 2)
+    end
+    return player.radios[radioId]:getRxTarget()
+end
+
 function RemovePlayerRadio(playerId, radioId)
     local player = GetOrCreatePlayer(playerId)
     if not player.radios[radioId] then

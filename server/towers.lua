@@ -74,9 +74,11 @@ exports('towerSetCellTower', TowerSetCellTower)
 ---@param positionCache { [ServerPlayer]: Vector3 }
 ---@return { [ServerPlayer]: number } volumes
 ---@return { [ServerPlayer]: string } submixes
+---@return { [string]: boolean } targets
 function ProcessTowers(rxPlayer, positionCache)
     local volumes = {}
     local submixes = {}
+    local targets = {}
     local playerPos = positionCache[rxPlayer.id]
 
     for rxTarget, _ in pairs(rxPlayer:getListenTargets()) do -- loop over all receive targets
@@ -99,6 +101,9 @@ function ProcessTowers(rxPlayer, positionCache)
                         local playerReceivedPower = RadioPower(distToTower, towerVolume * power, GetRadioFreq(rxTarget)) -- power received at rxPlayer from tower
                         local playerVolume = math.min(playerReceivedPower * rxSensitivity, 1)                            -- Volume at player, effected by rx sensitivity
 
+                        if playerVolume > 0.01 then
+                            targets[rxTarget] = true
+                        end
                         if playerVolume > 0.01 and playerVolume > (volumes[id] or 0) then                                -- Ignore the volume if it is less than 1 percent or less the current volume
                             volumes[id] = playerVolume
                             submixes[id] = Config.radio.submixIds[1]
@@ -109,7 +114,7 @@ function ProcessTowers(rxPlayer, positionCache)
         end
     end
 
-    return volumes, submixes
+    return volumes, submixes, targets
 end
 
 ---Get the distance to the nearest cell tower
