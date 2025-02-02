@@ -22,7 +22,7 @@ end
 ---Set the state of an ID in the set
 ---@param id string ID to modify the state of
 ---@param state? boolean State to set. Defaults to `true`
-function IDSet:set(id, state)
+function IDSet:add(id, state)
     if state == nil then
         state = true
     end
@@ -31,6 +31,6 @@ end
 
 ---Remove an ID from the set
 ---@param id string ID to remove
-function IDSet:unset(id)
+function IDSet:remove(id)
     self.set[id] = nil
 end

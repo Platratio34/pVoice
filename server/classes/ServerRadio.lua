@@ -53,6 +53,10 @@ function ServerRadio:_updateTargets()
     AddRadioTarget(self._txTarget, self._txFreq)
     local nRxTargetId = self._mode .. ':' .. (self._rxFreq or '')
     AddRadioTarget(self._rxTarget, self._rxFreq)
+    if self._mode == 'dmr' then
+        AddDigitalRadioTarget(self._txTarget)
+        AddDigitalRadioTarget(self._rxTarget)
+    end
 
     if self._txFreq then                                 -- we have a new tx frequency
         local last = self._txTarget

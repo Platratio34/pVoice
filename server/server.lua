@@ -70,12 +70,20 @@ local function calcVolumes()
                 if IsRadioTarget(rxTarget) then
                     local receivedPower = RadioPower(dist, txPower, GetRadioFreq(rxTarget))
                     local receivedVolume = math.min(receivedPower * rxSens, 1)
+                    local badQuality = receivedPower < 1
                     if receivedVolume > 0.01 then
                         targets[rxTarget] = true
+                        if IsDigitalRadioTarget(rxTarget) then
+                            receivedVolume = 1
+                        end
                     end
                     if receivedVolume > 0.01 and receivedVolume > (volumes[txId] or 0) then
                         volumes[txId] = receivedVolume
-                        submixes[txId] = Config.radio.submixIds[1]
+                        if badQuality then
+                            submixes[txId] = Config.radio.submixIds[2]
+                        else
+                            submixes[txId] = Config.radio.submixIds[1]
+                        end
                     end
                 elseif IsCall(rxTarget) then
                     local connected, submix = CalcCallVolume(rxTarget, player, txPlayer, positionCache)

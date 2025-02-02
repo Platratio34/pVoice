@@ -1,6 +1,8 @@
 local towers = {} ---@type { [string]: PVoice.Tower }
 local cellTowers = {} ---@type { [string]: PVoice.Tower }
 
+local networks = {} ---@type { [string]: { [string]: PVoice.IDSet } }
+
 ---Create a new tower with ID
 ---@param id string Tower ID. Must be unique between resources
 ---@param pos Vector3 Tower position
@@ -25,6 +27,12 @@ function TowerAddTargetPair(towerId, rxTarget, txTarget, power)
         error('Could not add target pair to tower: No tower with id "' .. towerId .. '"')
     end
     towers[towerId]:addTargetPair(rxTarget, txTarget, power)
+    if networks[txTarget] then
+        if not networks[txTarget][rxTarget] then
+            networks[txTarget][rxTarget] = IDSet.new()
+        end
+        networks[txTarget][rxTarget]:add(rxTarget)
+    end
 end
 exports('towerAddTargetPair', TowerAddTargetPair)
 
@@ -37,6 +45,9 @@ function TowerRemoveTargetPair(towerId, rxTarget, txTarget)
         error('Could not remove target pair to tower: No tower with id "' .. towerId .. '"')
     end
     towers[towerId]:removeTargetPair(rxTarget, txTarget)
+    if networks[txTarget] and networks[txTarget][rxTarget] then
+        networks[txTarget][rxTarget]:remove(rxTarget)
+    end
 end
 exports('towerRemoveTargetPair', TowerRemoveTargetPair)
 
@@ -69,6 +80,13 @@ function TowerSetCellTower(towerId, cell)
 end
 exports('towerSetCellTower', TowerSetCellTower)
 
+function AddTowerNetwork(networkId)
+    networks[networkId] = {}
+end
+function RemoveTowerNetwork(networkId)
+    networks[networkId] = nil
+end
+
 ---Process re-transmit volumes for the given player
 ---@param rxPlayer PVoice.ServerPlayer
 ---@param positionCache { [ServerPlayer]: Vector3 }
@@ -91,22 +109,40 @@ function ProcessTowers(rxPlayer, positionCache)
                 local distToTower = #(tower.pos - playerPos)
 
                 for txTarget, power in pairs(list) do                         -- loop over all source targets for the tower
+                
                     for id, txPlayer in pairs(GetPlayersTalking(txTarget)) do -- loop over all players talking on this target
                         local txDistToTower = #(tower.pos - positionCache[id])
                         local txPower = txPlayer:getTxPower(txTarget)
 
+                        local badQuality = false
+
                         local towerReceivedPower = RadioPower(txDistToTower, txPower, GetRadioFreq(txTarget))            -- power received at the tower from txPlayer
                         local towerVolume = math.min(towerReceivedPower, 1)                                              -- turn it into a volume to prevent way-over powering
+                        if towerReceivedPower < 1 then
+                            badQuality = true
+                        end
 
                         local playerReceivedPower = RadioPower(distToTower, towerVolume * power, GetRadioFreq(rxTarget)) -- power received at rxPlayer from tower
                         local playerVolume = math.min(playerReceivedPower * rxSensitivity, 1)                            -- Volume at player, effected by rx sensitivity
+                        if playerReceivedPower < 1 then
+                            badQuality = true
+                        end
+
+                        
 
                         if playerVolume > 0.01 then
                             targets[rxTarget] = true
+                            if IsDigitalRadioTarget(rxTarget) then
+                                playerVolume = 1
+                            end
                         end
                         if playerVolume > 0.01 and playerVolume > (volumes[id] or 0) then                                -- Ignore the volume if it is less than 1 percent or less the current volume
                             volumes[id] = playerVolume
-                            submixes[id] = Config.radio.submixIds[1]
+                            if badQuality then
+                                submixes[id] = Config.radio.submixIds[2]
+                            else
+                                submixes[id] = Config.radio.submixIds[1]
+                            end
                         end
                     end
                 end

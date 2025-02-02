@@ -124,3 +124,14 @@ RegisterNetEvent(Events.radio.set_state, function(radioId, tx, rx)
     player.radios[radioId]:setTalk(tx)
     player.radios[radioId]:setListen(rx)
 end)
+
+local digitalRadioTargets = {} ---@type { [string]: boolean }
+function AddDigitalRadioTarget(target)
+    digitalRadioTargets[target] = true
+end
+function RemoveDigitalRadioTarget(target)
+    digitalRadioTargets[target] = nil
+end
+function IsDigitalRadioTarget(target)
+    return digitalRadioTargets[target] ~= nil
+end

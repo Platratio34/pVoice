@@ -12,7 +12,8 @@ Config = {
     radio = {
 
         submixIds = {
-            'radio1'
+            'radio1',
+            'radio2'
         }
     },
 
@@ -28,6 +29,16 @@ Config = {
             }
         },
         ['radio1'] = {
+            radio = true,
+            effects_int = {
+                [`default`] = 1,
+            },
+            effects = {
+                [`freq_low`] = 300.0,
+                [`freq_hi`] = 6000.0
+            }
+        },
+        ['radio2'] = {
             radio = true,
             effects_int = {
                 [`default`] = 1,
