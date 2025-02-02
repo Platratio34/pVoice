@@ -6,7 +6,8 @@ Config = {
         towerInnerDistance = 3000,
         towerOuterDistance = 4000,
 
-        submixId = 'call1'
+        submixId = 'call1',
+        submixBadId = 'call2'
     },
 
     radio = {
@@ -19,6 +20,16 @@ Config = {
 
     submixes = {
         ['call1'] = {
+            radio = true,
+            effects_int = {
+                [`default`] = 1,
+            },
+            effects = {
+                [`freq_low`] = 300.0,
+                [`freq_hi`] = 6000.0
+            }
+        },
+        ['call2'] = {
             radio = true,
             effects_int = {
                 [`default`] = 1,

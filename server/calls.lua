@@ -91,7 +91,7 @@ function CalcCallVolume(callId, txPlayer, rxPlayer, positionCache)
         return false
     end
     if distToTower > Config.calls.towerInnerDistance or distFromTower > Config.calls.towerInnerDistance then
-        return true, Config.calls.submixId
+        return true, Config.calls.submixBadId
     end 
-    return true
+    return true, Config.calls.submixId
 end
